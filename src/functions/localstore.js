@@ -7,8 +7,13 @@ export function setLocalDB(key,value){
 
 export function getLocalDB(key){
    let value = localStorage.getItem(key)
-   let decryptedData = Buffer.from(value, 'base64').toString('utf8')
-   return decryptedData
+   if(value === null || value === "" || value === undefined){
+      return null
+   }
+   else{
+      let decryptedData = Buffer.from(value, 'base64').toString('utf8')
+      return decryptedData
+   }
 }
 
 

@@ -13,7 +13,10 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {Link} from 'react-router-dom';
 import Alert from '@mui/material/Alert';
-import {userSignUp} from '../../functions/auth'
+import {userSignUp} from '../../functions/auth';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress'
+import { setLocalDB } from '../../functions/localstore';
 
 function Copyright(props) {
   return (
@@ -41,15 +44,18 @@ export default function Signup() {
   const [cper,setCper] = React.useState(null)
   const [accept,setAccept] = React.useState(false)
   const [pass,setPass] = React.useState('')
+  const [loading,setLoading] = React.useState(false)
+
   React.useEffect(()=>{
     if(accept && cper === false){
         setBtnstatus(false)
     }
-  },[accept])
+  },[accept,cper])
   const handleSubmit = async(event) => {
     setError(false)
     setErrorMessage('')  
     event.preventDefault();
+    setLoading(true)
     const data = new FormData(event.currentTarget);
       let body = {
             name: data.get('name'),
@@ -60,8 +66,13 @@ export default function Signup() {
     }; 
     let response = await userSignUp(body)  
     if(response.error){
+        setLoading(false)
         setError(true);
         setErrorMessage(response.message)
+    }
+    else{
+      setLoading(false)
+      setLocalDB("_usau",JSON.stringify(response))
     }
   };
  const passwordValidator = (event)=>{
@@ -75,6 +86,18 @@ export default function Signup() {
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
+      {
+          loading?(
+            <>
+              <Backdrop
+               sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+              open={loading}
+            >
+             < CircularProgress color="inherit" />
+             </Backdrop>
+            </>
+          ):null
+        }
         <CssBaseline />
         <Box
           sx={{

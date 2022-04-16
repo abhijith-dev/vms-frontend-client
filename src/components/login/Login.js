@@ -14,12 +14,15 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {Link} from 'react-router-dom';
 import {userLogin} from '../../functions/auth';
 import Alert from '@mui/material/Alert';
+import {setLocalDB} from '../../functions/localstore';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
-      <Link   style={{textDecoration:'none',color:'#0009'}} to="https://mui.com/">
+      <Link   style={{textDecoration:'none',color:'#0009'}} to="/">
         Your Website
       </Link>{' '}
       {new Date().getFullYear()}
@@ -37,8 +40,10 @@ const theme = createTheme({
 export default function Login() {
   const [error,setError] = React.useState(false)
   const [errormessage,setErrorMessage] = React.useState('')
+  const [loading,setLoading] = React.useState(false)
   const handleSubmit =async (event) => {
     event.preventDefault();
+    setLoading(true)
     const data = new FormData(event.currentTarget);
     let body ={
       credential:data.get('cred'),
@@ -46,14 +51,31 @@ export default function Login() {
     }
     let response = await userLogin(body)
     if(response.error){
+        setLoading(false)
         setError(true);
         setErrorMessage(response.message)
+    }
+    else{
+      setLoading(false)
+      setLocalDB('_usau',JSON.stringify(response))
     }
   };
 
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
+        {
+          loading?(
+            <>
+              <Backdrop
+               sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+              open={loading}
+            >
+             < CircularProgress color="inherit" />
+             </Backdrop>
+            </>
+          ):null
+        }
         <CssBaseline />
         <Box
           sx={{

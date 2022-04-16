@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {Link} from 'react-router-dom';
-import {getPin} from '../../functions/auth';
+import {getPin,setPassword} from '../../functions/auth';
 import Alert from '@mui/material/Alert';
 import { getLocalDB, setLocalDB } from '../../functions/localstore';
 
@@ -55,16 +55,25 @@ export default function Reset() {
 
   const handleSubmit2 =async (event) => {
     event.preventDefault();
+    setError(false);
+    setErrorMessage("")
     const data = new FormData(event.currentTarget);
-    let body ={
-      email:data.get('email'),
-      password:data.get('password')
+    if(data.get("password1") === data.get("password2")){
+      let body ={
+        email:getLocalDB('eml'),
+        password:data.get('password1')
+      }
+      let response = await setPassword(body)
+      if(response.error){
+          setError(true);
+          setErrorMessage(response.message)
+      }
     }
-    let response = await getPin(body)
-    if(response.error){
-        setError(true);
-        setErrorMessage(response.message)
+    else{
+      setError(true);
+      setErrorMessage("password does not match")
     }
+    
   };
 
   return (
@@ -162,6 +171,7 @@ export default function Reset() {
               id="password1"
               label="new password"
               name="password1"
+              type="password"
               color='dark'
               autoComplete="off"
             />
@@ -170,6 +180,7 @@ export default function Reset() {
               required
               fullWidth
               id="password2"
+              type="password"
               label="confirm password"
               name="password2"
               color='dark'

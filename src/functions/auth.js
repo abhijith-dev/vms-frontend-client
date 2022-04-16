@@ -92,3 +92,25 @@ export async function getPin(body){
     return response
 
 }
+
+export async function setPassword(body){
+    let response ={}
+    let url = `${ENV.API_BASE_URL}${APIS.USERS.SETPASSWORD.url}`
+    let method = `${APIS.USERS.SETPASSWORD.method}`
+    let res = await axios({
+        url,
+        method,
+        headers,
+        data:body
+    })
+    if(res.status === 200){
+        response.error = false
+        response.message = 'success'
+    }
+    else{
+        response.error = true
+        response.message = res.data.exception  
+    }
+    return response
+
+}
