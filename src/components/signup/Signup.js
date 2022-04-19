@@ -73,6 +73,7 @@ export default function Signup() {
     else{
       setLoading(false)
       setLocalDB("_usau",JSON.stringify(response))
+      window.location.href ="/"
     }
   };
  const passwordValidator = (event)=>{

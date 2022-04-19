@@ -6,13 +6,14 @@ import Reset from './components/resetpassword/Reset';
 import {useEffect,useState} from 'react';
 import { getLocalDB } from './functions/localstore';
 import Home from './components/dashboard/Home';
+import Selection from './components/dashboard/Selection';
 
 function TemplateRouter() {
-  const [redirect,setRedirect] = useState(true)
+  const [redirect,setRedirect] = useState(false)
   useEffect(()=>{
     let secret =  getLocalDB('_usau')
     if(secret=== null){
-       setRedirect(true)
+       setRedirect(false)
     }
     else{
       setRedirect(true)
@@ -26,6 +27,7 @@ function TemplateRouter() {
          <Route path='/login' element={<Login />}/>
          <Route path='/signup' element={<Signup />}/>
          <Route path='/reset-password' element={<Reset />}/>
+         <Route path='/selection' element={<Selection />}/>
        </Routes>
      </BrowserRouter>
     </>

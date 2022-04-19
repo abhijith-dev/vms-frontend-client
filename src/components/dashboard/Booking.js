@@ -14,7 +14,11 @@ import Switch from '@mui/material/Switch';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import {Link} from 'react-router-dom';
-
+import {initiateBooking} from '../../functions/booking';
+import Alert from '@mui/material/Alert';
+import Backdrop from '@mui/material/Backdrop';
+import {setSessionDB} from '../../functions/sessionstore'
+import CircularProgress from '@mui/material/CircularProgress';
 const theme = createTheme({
     palette:{
         dark:'#222'
@@ -38,14 +42,53 @@ export default function Booking() {
   const [to,setTo] = React.useState('')
   const [people,setPeople] = React.useState('')
   const [luggage,setLuggage] = React.useState('')
+  const [error,setError] = React.useState(false)
+  const [errormessage,setErrorMessage] = React.useState('')
+  const [loading,setLoading] = React.useState(false)
 
   const handleSubmit = async(e)=>{
     e.preventDefault();
+    setLoading(true)
+    let body = {
+       from:from,
+       to:to,
+       p_count:parseInt(people),
+       g_count:luggage===''?0:parseInt(luggage)
+    }
+    let response = await initiateBooking(body)
+    if(response.error){
+      setLoading(false)
+      setError(true);
+      setErrorMessage(response.message)
+    }
+    else{
+    setLoading(false)
+    setSessionDB('_bookings',JSON.stringify(response))
+    window.location.href ="/selection"
+    }
   }
   return (
     <ThemeProvider theme={theme}>
     <Grid container direction={"row"} spacing={2}>
     <Grid ml={5} item mt={5} xs={5}>
+    {
+          loading?(
+            <>
+              <Backdrop
+               sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+              open={loading}
+            >
+             < CircularProgress color="inherit" />
+             </Backdrop>
+            </>
+          ):null
+    }    
+    {
+                error?
+                (
+                    <><Alert severity="error">{errormessage}</Alert></>
+                ):null
+      }
     <Box component="form" onSubmit={handleSubmit} validate={true}>   
     <FormControl style={{width:"30rem"}} sx={{ m: 1 }}>
           <InputLabel color='dark' htmlFor="outlined-adornment-amount">From</InputLabel>

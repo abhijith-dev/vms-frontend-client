@@ -8,6 +8,8 @@ import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import { fetchWallet } from '../../functions/wallet';
 import Logo from '../../assets/images/logo.jpeg'
+import {getUser} from '../../functions/auth';
+
 export default function Navbar() {
   const [account,setAccount] = React.useState({})
   const [user,setUser] = React.useState({})
@@ -15,6 +17,8 @@ export default function Navbar() {
     async function fetch(){
       let wallet = await fetchWallet()
       setAccount(wallet)
+      let userJSON = await getUser()
+      setUser(userJSON.user)
     }
     fetch()
   },[])
@@ -28,7 +32,7 @@ export default function Navbar() {
           <Typography style={{marginTop:"15px"}} variant="h6" color="inherit" component="div">VMS</Typography>
         </Stack>
         <Stack style={{marginLeft:'45rem',marginTop:'10px '}} direction="row" spacing={2} >
-        <Typography>Abhijith </Typography>
+        <Typography>{user.name}</Typography>
         <Typography>({account.account}) </Typography>
         </Stack>
         </Toolbar> 

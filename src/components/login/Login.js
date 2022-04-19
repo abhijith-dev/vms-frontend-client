@@ -58,6 +58,7 @@ export default function Login() {
     else{
       setLoading(false)
       setLocalDB('_usau',JSON.stringify(response))
+      window.location.href ="/"
     }
   };
 
