@@ -9,6 +9,8 @@ import Stack from '@mui/material/Stack';
 import { fetchWallet } from '../../functions/wallet';
 import Logo from '../../assets/images/logo.jpeg'
 import {getUser} from '../../functions/auth';
+import {Logout} from '@mui/icons-material';
+import { Button } from '@mui/material';
 
 export default function Navbar() {
   const [account,setAccount] = React.useState({})
@@ -22,6 +24,10 @@ export default function Navbar() {
     }
     fetch()
   },[])
+  const logout = ()=>{
+     localStorage.clear()
+     window.location.href="/"
+  }
   return (
     <>
     <Box sx={{ flexGrow: 1 }}>
@@ -31,9 +37,10 @@ export default function Navbar() {
           <Avatar style={{marginTop:"10px"}} alt="Remy Sharp" src={Logo} />
           <Typography style={{marginTop:"15px"}} variant="h6" color="inherit" component="div">VMS</Typography>
         </Stack>
-        <Stack style={{marginLeft:'45rem',marginTop:'10px '}} direction="row" spacing={2} >
+        <Stack style={{marginLeft:'37rem',marginTop:'12px '}} direction="row" spacing={2} >
         <Typography>{user.name}</Typography>
         <Typography>({account.account}) </Typography>
+        <Button title={"logout"} size="small" onClick={logout} style={{color:"#fff",marginTop:"-3px"}}><Logout /></Button>
         </Stack>
         </Toolbar> 
       </AppBar>
