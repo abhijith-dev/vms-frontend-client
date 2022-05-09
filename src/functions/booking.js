@@ -41,3 +41,36 @@ export async function initiateBooking(body){
     })
     return response
 }
+
+export async function selectBooking(body){
+    let response ={}
+    let url = `${ENV.API_BASE_URL}${APIS.BOOKING.BOOK.url}`
+    let method = `${APIS.BOOKING.BOOK.method}`
+    let token = JSON.parse(getLocalDB('_usau'))
+    headers["access-token"] = `Bearer ${token.access_token}`
+    let wallet = await fetchWallet()
+    if(wallet.error){
+        response.error=true
+        response.message='wallet not found in your browser'
+        return response
+    }
+    headers["wallet-address"] = wallet.account
+    headers["wallet-amount"] = wallet.balance
+    await axios({
+        url,
+        method,
+        headers,
+        data:body
+    })
+    .then(res=>{
+        if(res.status === 202){
+            response.error = false
+            response.data = res.data
+        }
+    })
+    .catch(error=>{
+        response.error = true
+        response.message = error.response.data.exception 
+    })
+    return response
+}

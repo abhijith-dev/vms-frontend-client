@@ -7,6 +7,10 @@ export const APIS ={
         GETUSER:{url:'/users/fetch',method:'GET'},
     },
     BOOKING:{
-        INITIATE:{url:'/booking/initiate',method:'POST'}
+        INITIATE:{url:'/booking/initiate',method:'POST'},
+        BOOK:{url:'/booking/selection',method:'POST'}
+    },
+    PAYMENT:{
+        GET_VEHICLE :{url:'/vehicles/client/get',method:'GET'}
     }
 }

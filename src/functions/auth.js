@@ -148,3 +148,29 @@ export async function getUser(){
  
     return response
 }
+
+export async function getVehicleDetails(id){
+    let response ={}
+    let url = `${ENV.API_BASE_URL}${APIS.PAYMENT.GET_VEHICLE.url}/${id}`
+    let method = `${APIS.PAYMENT.GET_VEHICLE.method}`
+    let token = JSON.parse(getLocalDB('_usau'))
+    headers["access-token"] = `Bearer ${token.access_token}`
+    await axios({
+        url,
+        method,
+        headers
+    })
+    .then(res=>{
+        if(res.status === 200){
+            response.error = false
+            response.data = res.data
+        }
+    })
+    .catch(error=>{
+        response.error = true
+        response.message = error.response.data.exception  
+    })
+ 
+    return response
+}
+
